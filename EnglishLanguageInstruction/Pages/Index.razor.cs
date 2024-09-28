@@ -24,7 +24,7 @@ public partial class Index
 
     private List<string> books = new()
     {
-        "7500", "7501", "8500", "10000", "10001"
+        "7500", "7501", "8500", "10000", "10001", "10002"
     };
 
     private string txtSlovak;
@@ -77,7 +77,7 @@ public partial class Index
         _pagesForeignWord.Clear();
         pages.Clear();
         
-        if (book == 7500 || book == 7501 || book == 8500 || book == 10000 || book == 10001)
+        if (book == 7500 || book == 7501 || book == 8500 || book == 10000 || book == 10001 || book == 10002)
         {
             foreach (var splitPage in splitPages)
             {
