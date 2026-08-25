@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Provider;
 
 namespace EnglishLanguageInstruction;
 
@@ -10,17 +11,41 @@ namespace EnglishLanguageInstruction;
                            ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
-    //protected override void OnCreate(Bundle savedInstanceState)
-    //{
-    //    if (!Android.OS.Environment.IsExternalStorageManager)
-    //    {
-    //        Intent intent = new Intent();
-    //        intent.SetAction(Android.Provider.Settings.ActionManageAppAllFilesAccessPermission);
-    //        Android.Net.Uri uri = Android.Net.Uri.FromParts("package", this.PackageName, null);
-    //        intent.SetData(uri);
-    //        StartActivity(intent);
-    //    }
+    private bool _requestedStorageManagerAccess;
 
-    //    base.OnCreate(savedInstanceState);
-    //}
+    protected override void OnCreate(Bundle savedInstanceState)
+    {
+        base.OnCreate(savedInstanceState);
+
+        RequestStorageManagerAccessIfNeeded();
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+
+        RequestStorageManagerAccessIfNeeded();
+    }
+
+    private void RequestStorageManagerAccessIfNeeded()
+    {
+        if (_requestedStorageManagerAccess || Android.OS.Environment.IsExternalStorageManager)
+        {
+            return;
+        }
+
+        _requestedStorageManagerAccess = true;
+
+        try
+        {
+            var intent = new Intent(Settings.ActionManageAppAllFilesAccessPermission);
+            var uri = Android.Net.Uri.FromParts("package", PackageName, null);
+            intent.SetData(uri);
+            StartActivity(intent);
+        }
+        catch (ActivityNotFoundException)
+        {
+            StartActivity(new Intent(Settings.ActionManageAllFilesAccessPermission));
+        }
+    }
 }
