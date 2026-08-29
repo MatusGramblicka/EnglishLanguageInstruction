@@ -2,9 +2,14 @@
 
 <form id="Sentences">
     <div class="inputrow">
-        <label id="Page">P</label>
-        <InputText id="page" style="height:30px;width:40px" @bind-Value="txtPage" size="2" />
-
+        <select class="custom-select" @onchange="SpeedValueChangeHandler" title="Speed">
+            @foreach (var speed in speeds)
+            {
+                <option value="@(speed)" selected="@(speed == selectSpeed)"> @(speed)</option>
+            }
+        </select>
+        
+        <label id="Speed">P</label>
         <select class="custom-select" @onchange="PageValueChangeHandler" title="Pages">
             <option value="Select">@selectForeignWord</option>
             @foreach (var page in pages)
@@ -53,4 +58,3 @@
     <button type="submit" style="height:75px;width:100px" class="btn btn-success" @onclick="() => btnPlayStop_Click()">Play/Stop</button>
     <button style="float: right;height:100px;width:130px" type="submit" class="btn btn-success" @onclick="() => btnNext_Click()">Next</button>
 </div>
-

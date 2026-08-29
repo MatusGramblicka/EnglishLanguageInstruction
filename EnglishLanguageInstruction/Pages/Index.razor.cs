@@ -1,5 +1,6 @@
 ﻿using Android.Media;
 using Microsoft.AspNetCore.Components;
+using System.Globalization;
 
 namespace EnglishLanguageInstruction.Pages;
 
@@ -27,6 +28,11 @@ public partial class Index
         "7500", "7501", "8500", "10000", "10001", "10002"
     };
 
+    private List<string> speeds = new()
+    {
+        "0.8", "0.9", "1.0", "1.1", "1.2"
+    };
+
     private string txtSlovak;
     private string txtForeign;
     private string txtPage;
@@ -35,6 +41,7 @@ public partial class Index
     private string txtForeignWord;
     private string selectForeignWord;
     private string selectBook;
+    private string selectSpeed = "1.0";
 
     private MediaPlayer _mediaPlayer;
 
@@ -140,8 +147,6 @@ public partial class Index
 
         _audioPageIndex = _pageIndex + Shifter;
         selectForeignWord = (_pageIndex + 1).ToString();
-
-        //PlayAudio(audioIndexStr);
     }
 
     private async void btnNext_Click()
@@ -166,8 +171,6 @@ public partial class Index
         }
 
         _audioPageIndex = _pageIndex + Shifter;
-
-        //PlayAudio(audioSentenceIndexStr);
 
         txtPage = (_pageIndex + 1).ToString();
         selectForeignWord = (_pageIndex + 1).ToString();
@@ -205,8 +208,6 @@ public partial class Index
 
         _audioPageIndex = _pageIndex + Shifter;
 
-        //PlayAudio(audioSentenceIndexStr);
-
         txtPage = (_pageIndex + 1).ToString();
         selectForeignWord = (_pageIndex + 1).ToString();
         txtSentence = (_sentenceIndex + 1).ToString();
@@ -236,7 +237,7 @@ public partial class Index
         _mediaPlayer.SetDataSource(Platform.CurrentActivity, uri);
         _mediaPlayer.Prepare();
         _mediaPlayer.Looping = true;
-        _mediaPlayer.PlaybackParams.SetSpeed(1.0f);
+        _mediaPlayer.PlaybackParams = _mediaPlayer.PlaybackParams.SetSpeed(float.Parse(selectSpeed, CultureInfo.InvariantCulture)) ?? throw new InvalidOperationException();
         _mediaPlayer.Start();
     }
     private void StopIfPlaying()
@@ -302,6 +303,14 @@ public partial class Index
             _ = int.TryParse(e.Value.ToString(), out var book);
             selectBook = book.ToString();
             LoadData(book);
+        }
+    }
+
+    private void SpeedValueChangeHandler(ChangeEventArgs e)
+    {
+        if (e.Value != null)
+        {
+            selectSpeed = e.Value.ToString();
         }
     }
 
